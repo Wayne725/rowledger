@@ -1,0 +1,6 @@
+{
+  "orders": {"key": "order_id", "amount": "amount", "currency": "currency"},
+  "payments": {"key": "order_id", "amount": "amount", "currency": "currency"},
+  "minor_units": {"USD": 2, "EUR": 2, "TWD": 0, "JPY": 0},
+  "trim_keys": true
+}
