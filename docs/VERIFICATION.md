@@ -16,7 +16,12 @@ Other boundaries: exact large-number amounts; duplicate keys and invalid counter
 - Opened the generated report in the Codex in-app browser. Selected source records, completed the documented manual pair and observed 6 matched pairs, 14 attention records and one human decision.
 - Copied the actual browser-generated Review JSON from the visible fallback and applied it through the CLI to the original synthetic inputs. The final report reproduced those counts.
 - The browser download event did not return through the automation interface, so file download completion is not claimed as verified. The report exposes the same JSON as a copy-and-save fallback.
-- Recorded the default desktop screenshot. Console inspection returned no warnings or errors at that check. Mobile, Safari, Windows Excel and remote GitHub CI results are not covered by these local checks.
+- Recorded the default desktop screenshot. Console inspection returned no warnings or errors at that check. Mobile, Safari and Windows Excel are not covered by these local checks.
+
+## Published repository checks
+
+- The public repository's complete 24-file tree matched the locally tested tree byte for byte (Git tree `157c1ca1542a4897a387edfdb6759dc0255e125d`). Only synthetic examples and generated synthetic screenshots were published.
+- [GitHub Actions run 1](https://github.com/Wayne725/rowledger/actions/runs/37265289758), commit `d2c6be1a03290f51d726941ec211cc2c51bd2531`, passed on Ubuntu for Python 3.11, 3.12 and 3.13. Each job installed the package from the published source, ran the 35-test suite and generated the demo successfully.
 
 ## Limits
 
