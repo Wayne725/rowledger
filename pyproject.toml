@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rowledger"
+version = "0.1.0"
+description = "Offline, source-linked order and payment reconciliation with snapshot-bound review."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "Wayne725"}]
+dependencies = ["pandas>=2.2,<4", "openpyxl>=3.1.5,<4", "defusedxml>=0.7.1,<1"]
+classifiers = ["Programming Language :: Python :: 3", "Topic :: Office/Business"]
+
+[project.scripts]
+rowledger = "rowledger.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rowledger = ["assets/*.html", "assets/*.js", "assets/*.css", "examples/*.csv", "examples/*.json"]
