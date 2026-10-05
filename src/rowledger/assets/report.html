@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>RowLedger — reconciliation review</title>
+<style>__STYLE__</style>
+</head>
+<body>
+<header><a class="brand" href="#">RowLedger<span>Reconciliation workspace</span></a><span class="local">OFFLINE · YOUR FILES STAY HERE</span></header>
+<main>
+<section class="intro"><div><p class="eyebrow">ORDERS / PAYMENTS</p><h1>Every row accounted for.</h1><p class="sub">See what agrees, understand what differs, and review the exceptions with their original records.</p></div><div class="run"><span>Input snapshot</span><code id="snapshot"></code><button id="export" class="primary">Export review</button><span id="export-note">Decisions are saved only when you export.</span></div></section>
+<section class="metrics" aria-label="Reconciliation summary"><div><span>Source records</span><strong id="total"></strong><small id="source-count"></small></div><div><span>Matched pairs</span><strong id="matched"></strong><small>One order + one payment</small></div><div class="attention"><span>Records to review</span><strong id="attention"></strong><small>Exceptions remain visible</small></div><div><span>Human decisions</span><strong id="decisions"></strong><small>Bound to this input snapshot</small></div></section>
+<section class="workspace"><div class="ledger"><div class="section-head"><div><h2>Source ledger</h2><p id="results-count"></p></div><button id="review-toggle">Pair records</button></div>
+<div class="toolbar"><label class="search">Search records<input id="search" placeholder="Key, source or original value" type="search"></label><label>View<select id="filter"><option value="attention">Needs review</option><option value="all">All records</option><option value="matched">Auto matched</option><option value="manual_matched">Human matched</option><option value="duplicate_key">Duplicate keys</option><option value="amount_mismatch">Amount differences</option><option value="currency_mismatch">Currency differences</option><option value="unmatched">Unmatched</option><option value="invalid">Invalid input</option><option value="blocked_invalid">Blocked by invalid input</option></select></label></div>
+<div class="table-scroll"><table><thead><tr><th>Record / key</th><th>Source</th><th>Amount</th><th>Result</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div class="pagination"><button id="prev">Previous</button><span id="page"></span><button id="next">Next</button></div></div>
+<aside><div id="detail"><p class="eyebrow">SOURCE DETAIL</p><h2>Inspect a record</h2><p>Select a key in the ledger to see the original fields and the reason for its result.</p></div>
+<section id="pair-panel" hidden><h2>Record a human decision</h2><p>Only unresolved, valid records with the same currency and exact amount can be paired. Original keys stay intact.</p><label>Order record<select id="order-select"></select></label><label>Payment record<select id="payment-select"></select></label><label>Reviewer<input id="reviewer" maxlength="100" autocomplete="off" placeholder="Your name or team"></label><label>Reason<textarea id="reason" maxlength="1000" rows="3" placeholder="Explain the evidence for this pairing"></textarea></label><button id="pair" class="primary">Add decision</button><p id="feedback" role="status" aria-live="polite"></p></section></aside></section>
+<section class="sources"><h2>Input provenance</h2><div id="provenance"></div><p>Matching uses exact keys and exact minor-unit amounts. Duplicate keys, missing values and conflicting data require review. No fuzzy matching, currency conversion or file edits.</p><details id="review-output" hidden><summary>Review JSON — copy if your browser blocks downloads</summary><textarea id="review-json" aria-label="Review JSON" readonly rows="10" style="width:100%;margin-top:12px"></textarea></details></section>
+</main><footer><span>RowLedger</span><span>This report contains the original input data. Share it only with intended reviewers.</span></footer>
+<script id="result-data" type="application/json">__RESULT__</script><script>__SCRIPT__</script>
+</body></html>
