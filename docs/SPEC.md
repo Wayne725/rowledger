@@ -27,3 +27,20 @@ One-to-one reconciliation only. No fuzzy matching, refunds, partial/split settle
 ## Development standards
 
 Python, snake_case, pandas for table/profile handling, Decimal/integer minor units for money, small modules at input/rule/engine/export boundaries. Avoid speculative integrations and broad exception swallowing. Tests assert externally meaningful behavior and adversarial data boundaries.
+
+## Studio 0.2.0 extension — 2026-10-08
+
+The unchanged matching contract above also applies to Studio. The package adds a local, single-user persistence layer; the reconciliation engine retains version 0.1.0 and review schema 1.
+
+1. Import two files with explicit rules through a loopback browser interface. Preserve exact input bytes and immutable base results. Rejected imports do not create a partial batch.
+2. Persist batches in SQLite. Identical input bytes, filenames, rules and engine identity reuse the existing batch without clearing its decisions or title.
+3. Reconstruct the current result from the immutable base and the current full decision document. Save the change and its event in one database transaction; invalid changes leave both untouched.
+4. Require an exact batch revision for decision/state updates and export. Concurrent updates from the same revision permit one commit; stale revisions receive HTTP 409.
+5. Withdrawing a manual pair restores the underlying unresolved statuses. Changes require an actor and reason; historical before/after decisions are included in export.
+6. Closing freezes changes without resolving records. Unresolved work requires explicit acknowledgement. Reopening requires a reason; both events retain the corresponding unresolved row IDs.
+7. Search/filter by source and result, with 50 records per page. UI history shows the most recent 100 events; export includes all events.
+8. Export a consistent revision containing original source bytes, result files, state and all history. Hash all ZIP members other than the manifest. ZIPs are records, not workspace restore archives.
+9. Bind only to 127.0.0.1; validate exact Host, same-origin browser requests and a transient API token. Serve only fixed UI assets; do not expose a filesystem tree, enable CORS or import third-party frontend assets.
+10. Package the Studio UI and provide an explicit synthetic sample without requiring private data. Saved decisions survive browser and server restarts; unsubmitted UI text need not persist.
+
+The database is unencrypted. Actors are self-reported and the local history is mutable by anyone with filesystem access. This is not multiuser authentication, a tamper-proof audit trail, an accounting ledger, a production internet server or a hostile-file sandbox. Restore requires a copy of the complete workspace taken while the server is stopped. Allocation/partial settlement and team workflows remain future work.

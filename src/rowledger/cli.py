@@ -31,9 +31,18 @@ def main(argv=None):
     run.add_argument("--out", type=Path, required=True)
     demo = commands.add_parser("demo", help="Create a complete synthetic example and report.")
     demo.add_argument("--out", type=Path, default=Path("runs/demo"))
+    studio = commands.add_parser("studio", help="Open a persistent, local browser workspace.")
+    studio.add_argument("--workspace", type=Path, default=Path("runs/studio"))
+    studio.add_argument("--port", type=int, default=8765)
     args = parser.parse_args(argv)
     try:
-        if args.command == "demo":
+        if args.command == "studio":
+            if not 0 <= args.port <= 65535:
+                raise ValueError("Port must be between 0 and 65535.")
+            from .studio_server import serve
+            serve(args.workspace, args.port)
+            return 0
+        elif args.command == "demo":
             examples = files("rowledger").joinpath("examples")
             result = reconcile(examples.joinpath("orders.csv"), examples.joinpath("payments.csv"))
             output = export_bundle(result, args.out)

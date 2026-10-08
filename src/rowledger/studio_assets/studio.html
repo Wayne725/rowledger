@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="rowledger-session" content="__SESSION_TOKEN__">
+  <title>RowLedger Studio</title>
+  <link rel="stylesheet" href="/studio.css">
+  <script src="/studio.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/">RowLedger<span>STUDIO / 0.2</span></a>
+    <div class="side-heading"><h2>對帳批次</h2><button id="new-batch" class="compact" aria-label="新增對帳批次">＋</button></div>
+    <div id="batch-list" class="batch-list"></div>
+    <div class="local-note"><span class="local-dot"></span>資料保存在這台電腦<p>關閉視窗不會清除已保存的工作。</p></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>營運 / 訂單與收款</span><span id="connection">本機工作台</span></header>
+    <section id="welcome" class="welcome">
+      <div class="eyebrow">A RECORD OF EVERY DECISION</div>
+      <h1>讓每期對帳，<br>都能接著做。</h1>
+      <p>匯入訂單與收款，查看差異，保存確認依據。<br>下一次開啟時，從上次停下的地方繼續。</p>
+      <button id="welcome-import">匯入第一個批次</button> <button id="welcome-demo" class="secondary">試用合成範例</button>
+      <div class="welcome-grid"><div><span>01 / 匯入</span><h3>原始檔案完整保留</h3><p>CSV 或 Excel，欄位可自行設定。</p></div><div><span>02 / 確認</span><h3>差異交由你判斷</h3><p>不猜配對，每次確認留下原因。</p></div><div><span>03 / 交接</span><h3>進度與結果一起保存</h3><p>匯出原始檔、結果與操作紀錄。</p></div></div>
+    </section>
+    <section id="workspace" hidden>
+      <div class="workspace-heading"><div><div class="eyebrow" id="batch-date"></div><h1 id="batch-title"></h1></div><div class="heading-actions"><span id="batch-state" class="tag"></span><button id="export" class="secondary">匯出完整結果</button></div></div>
+      <div id="metrics" class="metrics"></div>
+      <div class="work-grid">
+        <section class="records-panel">
+          <div class="filters"><label class="search"><span class="sr-only">搜尋來源資料</span><input id="search" placeholder="搜尋編號、內容或原因"></label><select id="status" aria-label="結果篩選"><option value="attention">需要確認</option><option value="">全部結果</option><option value="matched">自動配對</option><option value="manual_matched">人工配對</option><option value="duplicate_key">編號重複</option><option value="invalid">資料無效</option><option value="amount_mismatch">金額不同</option><option value="currency_mismatch">幣別不同</option><option value="unmatched">未配對</option><option value="blocked_invalid">對方資料無效</option></select><select id="side" aria-label="來源篩選"><option value="">兩份來源</option><option value="orders">訂單</option><option value="payments">收款</option></select></div>
+          <div class="table-scroll"><table><thead><tr><th>來源 / 編號</th><th>金額</th><th>狀態</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="rows"></tbody></table></div>
+          <div id="no-rows" class="empty" hidden>這個篩選下沒有資料。</div>
+          <div class="pagination"><span id="row-count"></span><div><button id="previous" class="secondary compact">上一頁</button><span id="page-number"></span><button id="next" class="secondary compact">下一頁</button></div></div>
+        </section>
+        <aside class="inspector">
+          <div class="panel-label">確認工作區</div>
+          <div id="source-detail" class="source-detail"><p class="muted">點選一列，查看原始值與判定依據。</p></div>
+          <div class="pair-slots"><div><span>選取的訂單</span><strong id="selected-order">尚未選取</strong></div><div><span>選取的收款</span><strong id="selected-payment">尚未選取</strong></div></div>
+          <form id="review-form"><label>確認人<input id="reviewer" required maxlength="100" autocomplete="name" placeholder="留下你的姓名"></label><label>確認或變更原因<textarea id="reason" required maxlength="1000" rows="3" placeholder="說明配對依據，或這次變更的原因"></textarea></label></form>
+          <button id="save-pair" class="full">確認配對並保存</button>
+          <button id="undo-pair" class="secondary full" hidden>撤回這筆人工配對</button>
+          <p class="fine-print">人工配對仍需幣別與金額完全相同。姓名是自行填寫的紀錄，不是身分驗證。</p>
+          <div class="close-section"><label id="attention-ack" class="checkbox"><input type="checkbox" id="acknowledge"><span>我確認仍有未解決差異；關閉只凍結本批次，不代表所有款項已結清。</span></label><button id="toggle-state" class="secondary full">關閉批次</button></div>
+        </aside>
+      </div>
+      <section class="history"><div class="section-heading"><h2>操作紀錄</h2><span>最近 100 次；完整紀錄包含在匯出檔</span></div><div id="events"></div></section>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+  </main>
+  <dialog id="import-dialog">
+    <div class="dialog-heading"><div><div class="eyebrow">NEW RECONCILIATION</div><h2>匯入對帳批次</h2></div><button id="close-dialog" class="secondary compact" aria-label="關閉匯入視窗">×</button></div>
+    <form id="import-form">
+      <label>批次名稱<input id="import-title" required maxlength="100" placeholder="例如：十月第二週訂單與收款"></label>
+      <div class="import-files"><label>訂單檔案<input id="orders-file" type="file" accept=".csv,.xlsx" required></label><label>收款檔案<input id="payments-file" type="file" accept=".csv,.xlsx" required></label></div>
+      <details><summary>欄位與工作表設定</summary><p class="muted">填寫檔案內的欄位名稱。多工作表 Excel 需指定工作表。</p><div class="mapping-grid">
+        <fieldset><legend>訂單</legend><label>編號欄位<input name="orders-key" value="order_id" required></label><label>金額欄位<input name="orders-amount" value="amount" required></label><label>幣別欄位<input name="orders-currency" value="currency" required></label><label>工作表<input name="orders-sheet" placeholder="單一工作表可留空"></label></fieldset>
+        <fieldset><legend>收款</legend><label>編號欄位<input name="payments-key" value="order_id" required></label><label>金額欄位<input name="payments-amount" value="amount" required></label><label>幣別欄位<input name="payments-currency" value="currency" required></label><label>工作表<input name="payments-sheet" placeholder="單一工作表可留空"></label></fieldset>
+      </div><label>幣別小數位<input id="currency-scales" value="USD=2, EUR=2, TWD=0, JPY=0" required></label><p class="fine-print">例如 USD=2 表示美元最多兩位小數；不自動換匯或四捨五入。</p></details>
+      <p class="fine-print">每份檔案最多 10 MiB / 25,000 列。同一份來源與設定再次匯入時，會開啟既有批次。</p>
+      <p id="import-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-footer"><button id="import-demo" type="button" class="secondary">試用合成範例</button><button id="import-submit" type="submit">匯入並核對</button></div>
+    </form>
+  </dialog>
+</body>
+</html>

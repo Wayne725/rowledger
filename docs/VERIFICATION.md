@@ -1,5 +1,19 @@
 # Verification record
 
+## Studio 0.2.0 — 2026-10-08
+
+48 unittest methods passed on macOS with Python 3.12, pandas 3.0.6 and openpyxl 3.1.5: the original 35 reconciliation checks plus 13 Studio checks. The count is not a coverage percentage.
+
+Studio checks cover persistence across new store instances, duplicate snapshot reuse, changed-source/rule isolation, atomic rejection of invalid/stale decisions, simultaneous revision conflicts, close acknowledgement and freeze/reopen/withdraw, exact-source ZIP hashes and complete history, pagination row conservation, source immutability, explicit sample creation and real HTTP import/review/export. HTTP checks verify loopback binding, Host/Origin/session enforcement, CSP, no CORS and malformed-request rejection.
+
+Browser checks used the packaged synthetic sample. The interface created a 26-row batch, saved the documented pair (6 pairs / 14 attention / 1 human decision), retained it after refresh, rejected closing without acknowledgement, froze the acknowledged batch, reopened it and withdrew the pair (5 / 16 / 0). Reloading the same sample reused the reviewed batch. Narrow-layout inspection showed no document overflow at the browser's reported 433 CSS-pixel width; this is not a device/browser compatibility matrix.
+
+The automation file chooser returned no selected files, and its download event timed out. Therefore end-to-end browser file selection and completed browser ZIP downloads are **not claimed as verified**. HTTP import/export and archive byte/checksum validation passed independently; the UI rejected absent files instead of writing an empty batch. The product remains a preview pending ordinary-browser file-picker/download validation.
+
+The wheel was installed into a separate target directory. From outside the source checkout, its package path was checked, its CLI generated the demo, its packaged Studio HTML/JS/CSS were served, and its HTTP sample/export verified all seven manifest checksums. Runtime dependencies came from the dedicated Python virtual environment; this was not a separate clean installation of every dependency. Publication evidence is recorded in the release notes. All screenshots and fixtures are synthetic. No customer data or transactions were used.
+
+## Original 0.1.0 record
+
 Date: 2026-10-05 · Version: 0.1.0
 
 ## Automated behavior checks
